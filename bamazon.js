@@ -15,9 +15,15 @@ const connection = mysql.createConnection({
 
 });
 
+console.log("\n===========================");
+console.log("\nWelcome to Bamazon store!");
+console.log("\n===========================");
+
 // gets the list of what we have
 
 var showInventory = function() {
+
+  console.log("\n\nThis is what we have for purchase:\n");
 
 connection.query(
 
@@ -54,28 +60,32 @@ connection.query(
 
         // show the table
         console.log("\n\n" + table.toString());
+
+        purchaseProcess();
       }
   });
 
+
+
 }
 
-showInventory();
 
 
-function purchaseProcess(){
+
+var purchaseProcess = function(){
 
 inquirer.prompt(
     [
         {
             name: 'id',
             type: 'input',
-            message: 'Please enter id of a product you want to buy',
+            message: '\nPlease enter Item ID of a product you want to buy:',
         },
 
         {
           name: 'quantity',
           type: 'input',
-          message: 'Please enter the amount you want to buy'
+          message: '\nPlease enter the amount you want to buy:'
         }
     ]
 
@@ -110,7 +120,7 @@ inquirer.prompt(
                   {
                     type: "list",
                     name: "continue",
-                    message: "\nDo you want to place your order?\n",
+                    message: "\nDo you want to place your order?",
                     choices: [
                               "Yes",
                               "No"]
@@ -157,7 +167,7 @@ inquirer.prompt(
 
                                 else {
 
-                                  console.log("\nThank you for purchase!\n");
+                                  console.log("\nThank you for purchase!");
 
 
                                   inquirer.prompt([
@@ -165,7 +175,7 @@ inquirer.prompt(
                                       {
                                         type: "list",
                                         name: "orderAgain",
-                                        message: "\nDo you want to buy anything else?\n",
+                                        message: "\nDo you want to buy anything else?",
                                         choices: [
                                         "Yes",
                                         "No"]
@@ -176,11 +186,11 @@ inquirer.prompt(
                                         if (answers.orderAgain === "Yes") {
 
                                           showInventory();
-                                          purchaseProcess();
+                                      
                                         }
 
                                         else {
-                                          console.log("\nThank you for visiting our store!\n");
+                                          console.log("\nThank you for visiting our store!");
                                         }
 
 
@@ -198,7 +208,31 @@ inquirer.prompt(
 
                           else {
 
-                            console.log("Thank you for coming!")
+                                   inquirer.prompt([
+
+                                      {
+                                        type: "list",
+                                        name: "orderAgain",
+                                        message: "\nDo you want continue shopping?",
+                                        choices: [
+                                        "Yes",
+                                        "No"]
+                                      }
+
+                                    ]).then(answers => {
+
+                                        if (answers.orderAgain === "Yes") {
+
+                                          showInventory();
+                                      
+                                        }
+
+                                        else {
+                                          console.log("\nThank you for visiting our store!");
+                                        }
+
+
+                                        });
 
                           }
                       });
@@ -210,14 +244,14 @@ inquirer.prompt(
 
                   else {
 
-                    console.log("\nWe don't have enough in stock\n");
+                    console.log("\nWe don't have enough in stock!\n");
 
                       inquirer.prompt([
 
                                       {
                                         type: "list",
                                         name: "orderAgain",
-                                        message: "\nDo you want to change amount or buy anything else?\n",
+                                        message: "\nDo you want to change amount or buy anything else?",
                                         choices: [
                                         "Yes",
                                         "No"]
@@ -228,11 +262,11 @@ inquirer.prompt(
                                         if (answers.orderAgain === "Yes") {
 
                                           showInventory();
-                                          purchaseProcess();
+                                        
                                         }
 
                                         else {
-                                          console.log("\nThank you for visiting our store!\n");
+                                          console.log("\nThank you for visiting our store!");
                                         }
 
 
@@ -253,4 +287,4 @@ inquirer.prompt(
 
 }
 
-purchaseProcess();
+showInventory();
