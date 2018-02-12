@@ -12,6 +12,28 @@ const connection = mysql.createConnection({
 
 });
 
+
+const options = {
+
+  'View Products for Sale': function(type){
+
+    showInventory(type);
+  },
+
+  'View Low Inventory': function(){
+    lowInventory();
+  },
+
+  'Add to Inventory': function(type){
+    showInventory(type);
+  },
+
+  'Add New Product': function(){
+  newProduct();
+  }
+
+}
+
 var showInventory = function(type) {
 
   console.log("\n\nThis is what we have for purchase:\n");
@@ -51,10 +73,14 @@ connection.query(
 
         // show the table
         console.log("\n\n" + table.toString());
+
         if(type === 'Add to Inventory') {
           addToInventory();
         }
 
+        else if (type === 'View Products for Sale') {
+          continuePrompt();
+        }
 
       }
   });
@@ -105,31 +131,10 @@ function lowInventory() {
 
         // show the table
         console.log("\n\n" + table.toString());
+
+        continuePrompt();
       }
   });
-}
-
-
-
-const options = {
-
-	'View Products for Sale': function(){
-
-		showInventory();
-	},
-
-	'View Low Inventory': function(){
-		lowInventory();
-	},
-
-	'Add to Inventory': function(type){
-		showInventory(type);
-	},
-
-	'Add new product': function(){
-		console.log("New");
-	}
-
 }
 
 function addToInventory(){
@@ -140,7 +145,7 @@ function addToInventory(){
         {
             name: 'item',
             type: 'input',
-            message: 'Enter Item ID you want to add to',
+            message: 'Enter Item ID for which you want to change the amount in stock',
          
         },
 
@@ -183,7 +188,16 @@ function addToInventory(){
                         if(error) {
                           console.log(error);
                         }
-                  console.log("New amount set");
+
+                   else {
+
+                    console.log("\nNew amount set");
+
+
+                  continuePrompt();
+                   }  
+                  
+
                     
                    });
 
@@ -208,7 +222,7 @@ inquirer.prompt(
          {
             name: 'department',
             type: 'input',
-            message: 'Please department name for this item',
+            message: 'Please enter department name for this item',
          
         },
 
@@ -239,7 +253,7 @@ inquirer.prompt(
 
 
                   [
-                    data.name,
+                    data.item_name,
                     data.department,
                     data.price,
                     data.amount
@@ -253,7 +267,15 @@ inquirer.prompt(
                         if(error) {
                           console.log(error);
                         }
-                  console.log("New item added");
+
+                        else {
+
+                          console.log("New item added");
+                  continuePrompt();
+
+                        }
+
+                  
                     
                    });
 
@@ -264,12 +286,46 @@ inquirer.prompt(
 
 }
 
+function continuePrompt(){
+
+inquirer.prompt(
+    [
+        {
+            name: 'continue',
+            type: 'list',
+            message: '\nDo you want to perform other tasks?',
+            choices: ['Yes, show me the list of options',
+                'No, I am done for today']
+        }
+    ]
+).then((data) =>
+       {
+          if (data.continue === 'Yes, show me the list of options') {
+            start();
+          }
+
+          else {
+            console.log("\nHave a great day!");
+          }
+
+
+       }).catch((error) =>
+                {
+                    console.log(error);
+                });
+
+};
+
+
+
+function start(){
+
 inquirer.prompt(
     [
         {
             name: 'actions',
             type: 'list',
-            message: 'Menu Options:',
+            message: '\nMenu Options:',
             choices: ['View Products for Sale',
                 'View Low Inventory',
                 'Add to Inventory',
@@ -278,10 +334,13 @@ inquirer.prompt(
     ]
 ).then((data) =>
        {
-           options[data.actions]();
+           options[data.actions](data.actions);
        }).catch((error) =>
                 {
                     console.log(error);
                 });
 
+};
+
+start();
 
